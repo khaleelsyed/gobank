@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - go build -o bin/gobank
+  
+  run: 
+    cmds:
+      - task: build
+      - ./bin/gobank
+  
+  test:
+    cmds:
+      - go test -v ./...
