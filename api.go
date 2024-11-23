@@ -23,6 +23,7 @@ type APIServer struct {
 func NewAPIServer(listenAddr string, storage Storage) *APIServer {
 	return &APIServer{
 		listenAddr: listenAddr,
+		storage:    storage,
 	}
 }
 
@@ -59,19 +60,18 @@ func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) err
 }
 
 func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
-	CreateAccountReq := new(CreateAccountRequest)
-	if err := json.NewDecoder(r.Body).Decode(CreateAccountReq); err != nil {
+	createAccountReq := new(CreateAccountRequest)
+	if err := json.NewDecoder(r.Body).Decode(createAccountReq); err != nil {
 		return err
 	}
 
-	account := NewAccount(CreateAccountReq.FirstName, CreateAccountReq.LastName)
+	account := NewAccount(createAccountReq.FirstName, createAccountReq.LastName)
 
 	if err := s.storage.CreateAccount(account); err != nil {
-		log.Fatal("fatal error raised")
 		return err
 	}
 
-	return WriteJSON(w, http.StatusOK, CreateAccountReq)
+	return WriteJSON(w, http.StatusCreated, account)
 
 }
 
