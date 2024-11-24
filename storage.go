@@ -90,7 +90,22 @@ func (s *PostgresStore) DeleteAccount(id int) error {
 }
 
 func (s *PostgresStore) GetAccountByID(id int) (*Account, error) {
-	return nil, nil
+	query := fmt.Sprintf("SELECT * FROM account WHERE id = %d", id)
+	response, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+
+	account := new(Account)
+	response.Scan(
+		&account.ID,
+		&account.FirstName,
+		&account.LastName,
+		&account.AccountNumber,
+		&account.Balance,
+		&account.CreatedAt,
+	)
+	return account, nil
 }
 
 func (s *PostgresStore) GetAccounts() ([]*Account, error) {
