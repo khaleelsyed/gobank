@@ -63,12 +63,12 @@ func (s *APIServer) handleGetAccounts(w http.ResponseWriter, r *http.Request) er
 }
 
 func (s *APIServer) handleGetAccountByID(w http.ResponseWriter, r *http.Request) error {
-	userId := mux.Vars(r)["id"]
+	userIdString := mux.Vars(r)["id"]
 
-	parsedUserId, err := strconv.Atoi(userId)
+	parsedUserId, err := strconv.Atoi(userIdString)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("Invalid id given %s", userIdString)
 	}
 
 	account, err := s.storage.GetAccountByID(parsedUserId)
